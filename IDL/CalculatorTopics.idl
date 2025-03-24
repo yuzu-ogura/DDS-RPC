@@ -1,0 +1,62 @@
+#include "MessageHeader.idl"
+
+struct Calculator_addition_In {
+    long value1;
+    long value2;
+};
+
+struct Calculator_subtraction_In {
+    long value1;
+    long value2;
+};
+
+struct Calculator_addition_Out {
+    long return_;
+};
+
+struct Calculator_subtraction_Out {
+    long return_;
+};
+
+union Calculator_addition_Result switch(long)
+{
+    case eprosima::rpc::protocol::REMOTE_EX_OK:
+        Calculator_addition_Out result;
+};
+
+union Calculator_subtraction_Result switch(long)
+{
+    case eprosima::rpc::protocol::REMOTE_EX_OK:
+        Calculator_subtraction_Out result;
+};
+
+union Calculator_Call switch(long)
+{
+    case 0xCBC6CEAA:
+        Calculator_addition_In addition;
+
+    case 0xCA019A14:
+        Calculator_subtraction_In subtraction;
+};
+
+struct Calculator_Request {
+    eprosima::rpc::protocol::RequestHeader header;
+    Calculator_Call data;
+};
+
+union Calculator_Return switch (long)
+{
+    case 0xCBC6CEAA:
+        Calculator_addition_Result addition;
+
+    case 0xCA019A14:
+        Calculator_subtraction_Result subtraction;
+
+    default:
+        eprosima::rpc::protocol::UnknownOperation unknownOp;
+};
+
+struct Calculator_Reply {
+    eprosima::rpc::protocol::ReplyHeader header;
+    Calculator_Return data;
+};
